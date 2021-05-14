@@ -1,0 +1,19 @@
+{
+  "name": "yadi/php-google-people-contact",
+  "description": "Google People Contact PHP SDK",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Premium Fast Network",
+      "email": "cs@premiumfast.net"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "PremiumFastNetwork\\": "src/"
+    }
+  }
+}
