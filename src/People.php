@@ -14,9 +14,20 @@ class People
 
     public function __construct(Client $client)
     {
+        // set client
         $this->client = $client;
+        // set default root url
         $this->client->setRootURL(self::PeopleV1);
+        // fetch access_token from refresh token if not exist
         $this->client->validateToken();
+        // set scopes default
+        if(empty($this->client->getScopes())) {
+            $this->scopes = [
+                Scopes::USERINFO_PROFILE,
+                Scopes::CONTACTS,
+                Scopes::CONTACTS_READONLY,
+            ];
+        }
     }
 
     public function getContact($value)

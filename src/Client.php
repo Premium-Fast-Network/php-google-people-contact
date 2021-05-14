@@ -44,15 +44,6 @@ class Client
      */
     private $token;
 
-    public function __construct()
-    {
-        $this->scopes = [
-            Scopes::USERINFO_PROFILE,
-            Scopes::CONTACTS,
-            Scopes::CONTACTS_READONLY,
-        ];
-    }
-
     public function setRootURL($value)
     {
         $this->rootURL = $value;
