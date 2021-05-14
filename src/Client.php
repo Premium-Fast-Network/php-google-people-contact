@@ -140,7 +140,10 @@ class Client
                 // setup token
                 $response = json_decode($request, true);
                 $this->token['access_token'] = $response['access_token'];
-
+                $this->token['expires_in'] = $response['expires_in'];
+                $this->token['token_type'] = $response['token_type'];
+                $this->token['id_token'] = $response['id_token'];
+                
                 // clean up headers
                 $this->headers = null;
 
@@ -289,7 +292,8 @@ class Client
 
     public function getAccessToken()
     {
-        return $this->token['access_token'];
+        $this->validateToken();
+        return $this->token;
     }
 
     public function setRefreshToken($value)
