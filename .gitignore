@@ -1,4 +1,4 @@
 /vendor/
-example
 /*.php
-data.json
+/data.json
+/example/data.json
