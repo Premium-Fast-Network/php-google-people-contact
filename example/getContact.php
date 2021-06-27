@@ -22,8 +22,8 @@ $client->setScopes([
 ]);
 
 $people = new People($client);
-$save = $people->createContact('081223456789', 'FirstName', 'LastName');
-$response = json_decode($save);
+$getContact = $people->getContact('people/c3199159749099290896');
+$response = json_decode($getContact);
 
 if($response && $response->resourceName) {
     echo "People ID: " . $response->resourceName . "\n";

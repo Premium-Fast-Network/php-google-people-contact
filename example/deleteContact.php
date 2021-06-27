@@ -22,13 +22,6 @@ $client->setScopes([
 ]);
 
 $people = new People($client);
-$save = $people->createContact('081223456789', 'FirstName', 'LastName');
-$response = json_decode($save);
+$response = $people->deleteContact('people/c8122188266895564665');
 
-if($response && $response->resourceName) {
-    echo "People ID: " . $response->resourceName . "\n";
-    echo "Display Names: " . $response->names[0]->displayName . "\n";
-    echo "Phone Number: " . $response->phoneNumbers[0]->value . "\n";
-} else {
-    print_r("Failed to Save Contact.!");
-}
+print_r($response);
