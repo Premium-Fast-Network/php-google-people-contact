@@ -2,6 +2,8 @@
 
 namespace PremiumFastNetwork;
 
+use Exception;
+
 class People
 {
     /**
@@ -36,7 +38,9 @@ class People
     }
 
     /**
-     * Get Contact Detail
+     * Get Contact Detail by People ID
+     * 
+     * @see https://developers.google.com/people/api/rest/v1/people/get
      * 
      * @param string $resourceName
      */
@@ -51,6 +55,8 @@ class People
     
     /**
      * Create New Contact
+     * 
+     * @see https://developers.google.com/people/api/rest/v1/people/createContact
      * 
      * @param string $phone
      * @param string $firstName
@@ -86,6 +92,13 @@ class People
         );
     }
 
+    /**
+     * Delete Contact by People ID
+     * 
+     * @see https://developers.google.com/people/api/rest/v1/people/deleteContact
+     * 
+     * @param string $resourceName
+     */
     public function deleteContact($resourceName)
     {
         return $this->client->request(
@@ -94,6 +107,13 @@ class People
         );
     }
 
+    /**
+     * Lists All Contact
+     * 
+     * @see https://developers.google.com/people/api/rest/v1/people.connections/list
+     * 
+     * @param array $options
+     */
     public function listContact($options)
     {
         return $this->client->request(
@@ -104,18 +124,77 @@ class People
             );
     }
 
-    public function batchCreateContact()
+    /**
+     * Bulk Create Contact
+     * Max: 200 Contact/Request
+     * Limited to 10 parallel requests per user
+     * 
+     * @see https://developers.google.com/people/api/rest/v1/people/batchCreateContacts
+     * 
+     * @param array $lists
+     */
+    public function batchCreateContact($lists)
     {
+        // count array
+        if (count($lists) > 200) {
+            throw new Exception("Maximum 200 Contact.!");
+        }
 
+        $dataCreate = [];
+        $dataCreate['contacts'] = [];
+
+        foreach($lists as $list) {
+            $dataCreate['contacts'][]['contactPerson'] = $list;
+        }
+
+        return $dataCreate;
     }
 
-    public function batchUpdateContact()
+    /**
+     * Bulk Update Contact
+     * Max: 200 Contact/Request
+     * Limited to 10 parallel requests per user
+     * 
+     * @see https://developers.google.com/people/api/rest/v1/people/batchUpdateContacts
+     * 
+     * @param array $lists
+     */
+    public function batchUpdateContact($lists)
     {
+        // count array
+        if (count($lists) > 200) {
+            throw new Exception("Maximum 200 Contact.!");
+        }
 
+        //
     }
 
-    public function batchDeleteContact()
+    /**
+     * Bulk Delete Contact
+     * Max: 200 Contact/Request
+     * Limited to 10 parallel requests per user
+     * 
+     * @see https://developers.google.com/people/api/rest/v1/people/batchDeleteContacts
+     * 
+     * @param array $lists
+     */
+    public function batchDeleteContact($lists)
     {
+        // count array
+        if (count($lists) > 200) {
+            throw new Exception("Maximum 200 Contact.!");
+        }
+        
+        // array data
+        $dataDelete = [
+            'resourceNames' => $lists
+        ];
 
+        // return response
+        return $this->client->request(
+            'POST',
+            'people:batchDeleteContacts',
+            json_encode($dataDelete)
+        );
     }
 }
