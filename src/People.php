@@ -89,7 +89,7 @@ class People
     public function deleteContact($resourceName)
     {
         return $this->client->request(
-            'GET',
+            'DELETE',
             $resourceName.':deleteContact'
         );
     }
