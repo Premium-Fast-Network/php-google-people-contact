@@ -35,6 +35,11 @@ class People
         $this->client->validateToken();
     }
 
+    /**
+     * Get Contact Detail
+     * 
+     * @param string $resourceName
+     */
     public function getContact($resourceName)
     {
         return $this->client->request(
@@ -44,12 +49,40 @@ class People
         );
     }
     
-    public function createContact($options)
+    /**
+     * Create New Contact
+     * 
+     * @param string $phone
+     * @param string $firstName
+     * @param string $lastName
+     * @param array @options
+     */
+    public function createContact($phone, $firstName, $lastName, $options = null)
     {
+        $newData = [
+            'names' => [
+                [
+                    'givenName' => $firstName,
+                    'familyName' => $lastName
+                ]
+            ],
+            'phoneNumbers' => [
+                [
+                    'value' => $phone
+                ]
+            ]
+        ];
+
+    
+        // merge data
+        $mergeData = $options ? array_merge($options, $newData) : $newData;
+
+
+        // fetch request
         return $this->client->request(
             'POST',
             'people:createContact?personFields=' . implode(',', self::PersonFields), 
-            $options
+            json_encode($mergeData)
         );
     }
 
