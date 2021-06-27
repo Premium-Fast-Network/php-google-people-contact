@@ -9,6 +9,10 @@
       "email": "cs@premiumfast.net"
     }
   ],
+  "support": {
+    "email": "cs@premiumfast.net",
+    "issues": "https://github.com/Premium-Fast-Network/php-google-people-contact/issues"
+  },
   "minimum-stability": "stable",
   "require": {},
   "autoload": {
