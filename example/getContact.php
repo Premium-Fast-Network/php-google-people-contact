@@ -22,11 +22,12 @@ $client->setScopes([
 ]);
 
 $people = new People($client);
-$getContact = $people->getContact('people/c3199159749099290896');
+$getContact = $people->getContact('people/c7970798843045239796');
 $response = json_decode($getContact);
 
 if($response && $response->resourceName) {
     echo "People ID: " . $response->resourceName . "\n";
+    echo "People ETag: " . $response->etag . "\n";
     echo "Display Names: " . $response->names[0]->displayName . "\n";
     echo "Phone Number: " . $response->phoneNumbers[0]->value . "\n";
 } else {

@@ -23,8 +23,12 @@ $client->setScopes([
 
 $people = new People($client);
 $response = $people->batchDeleteContact([
-    'people/c1731070739751430628',
-    'people/c3199159749099290896'
+    'people/c7970798843045239796',
+    'people/c7125974266199980934',
+    'people/c9008410021235787598',
+    'people/c3303563411911349587',
+    'people/c8209155738909287553',
+    'people/c4611136984342315318',
 ]);
 
 print_r($response);

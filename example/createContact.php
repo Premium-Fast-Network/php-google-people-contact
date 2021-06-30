@@ -27,6 +27,7 @@ $response = json_decode($save);
 
 if($response && $response->resourceName) {
     echo "People ID: " . $response->resourceName . "\n";
+    echo "People ETag: " . $response->etag . "\n";
     echo "Display Names: " . $response->names[0]->displayName . "\n";
     echo "Phone Number: " . $response->phoneNumbers[0]->value . "\n";
 } else {
