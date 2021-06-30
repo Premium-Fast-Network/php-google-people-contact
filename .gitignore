@@ -2,3 +2,5 @@
 /*.php
 /data.json
 /example/data.json
+.idea
+.vscode
