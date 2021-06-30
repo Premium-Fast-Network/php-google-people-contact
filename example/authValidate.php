@@ -21,4 +21,4 @@ $client->setScopes([
     Scopes::CONTACTS_READONLY,
 ]);
 
-print_r($client->createAuthUrl());
+print_r($client->getTokenWithCode('CODE'));

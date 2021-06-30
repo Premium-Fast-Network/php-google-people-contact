@@ -344,5 +344,13 @@ class Client
     public function getPrompt()
     {
         return $this->api['prompt'];
-    }   
+    }
+
+    public function getMe()
+    {
+        $this->rootURL = 'https://www.googleapis.com/oauth2/v3';
+        $this->validateToken();
+
+        return $this->request('GET', 'userinfo?access_token=' . $this->token['access_token']);
+    }
 }
