@@ -18,6 +18,7 @@ class People
     const PersonFields = ['addresses', 'ageRanges', 'biographies', 'birthdays', 'calendarUrls', 'clientData', 'coverPhotos', 'emailAddresses', 'events', 'externalIds', 'genders', 'imClients', 'interests', 'locales', 'locations', 'memberships', 'metadata', 'miscKeywords', 'names', 'nicknames', 'occupations', 'organizations', 'phoneNumbers', 'photos', 'relations', 'sipAddresses', 'skills', 'urls', 'userDefined',];
 
     private $client;
+    private $batch = [];
 
     public function __construct(Client $client)
     {
@@ -52,20 +53,18 @@ class People
             implode(',', self::PersonFields)
         );
     }
-    
+
     /**
-     * Create New Contact
-     * 
-     * @see https://developers.google.com/people/api/rest/v1/people/createContact
-     * 
+     * Build Contact Data to Array Contact
+     *
      * @param string $phone
      * @param string $firstName
      * @param string $lastName
-     * @param array @options
+     * @return \array[][]
      */
-    public function createContact($phone, $firstName, $lastName, $options = null)
+    public function buildContact($phone, $firstName, $lastName)
     {
-        $newData = [
+        $contact = [
             'names' => [
                 [
                     'givenName' => $firstName,
@@ -79,10 +78,26 @@ class People
             ]
         ];
 
+        return $contact;
+    }
+    
+    /**
+     * Create New Contact
+     * 
+     * @see https://developers.google.com/people/api/rest/v1/people/createContact
+     * 
+     * @param string $phone
+     * @param string $firstName
+     * @param string $lastName
+     * @param array @options
+     */
+    public function createContact($phone, $firstName, $lastName, $options = null)
+    {
+        // build contact data
+        $contact = self::buildContact($phone, $firstName, $lastName);
     
         // merge data
-        $mergeData = $options ? array_merge($options, $newData) : $newData;
-
+        $mergeData = $options ? array_merge($options, $contact) : $contact;
 
         // fetch request
         return $this->client->request(
@@ -125,29 +140,73 @@ class People
     }
 
     /**
+     * Build Contact in Array Batch
+     *
+     * @param string $phone
+     * @param string $firstName
+     * @param string $lastName
+     * @return void
+     */
+    public function batchBuildContact($phone, $firstName, $lastName)
+    {
+        // create contact array
+        $contact = self::buildContact($phone, $firstName, $lastName);
+        $this->batch[] = $contact;
+    }
+
+
+    /**
      * Bulk Create Contact
      * Max: 200 Contact/Request
      * Limited to 10 parallel requests per user
      * 
      * @see https://developers.google.com/people/api/rest/v1/people/batchCreateContacts
-     * 
-     * @param array $lists
+     *
+     * @param array $custom
      */
-    public function batchCreateContact($lists)
+    public function batchCreateContact($custom = null)
     {
         // count array
-        if (count($lists) > 200) {
+        if (count($this->batch) > 200) {
             throw new Exception("Maximum 200 Contact.!");
         }
 
+        // build data for bulk
         $dataCreate = [];
-        $dataCreate['contacts'] = [];
 
-        foreach($lists as $list) {
+        // generate contact
+        $dataCreate['contacts'] = [];
+        foreach($this->batch as $list) {
             $dataCreate['contacts'][]['contactPerson'] = $list;
         }
 
-        return $dataCreate;
+        // other data
+        $dataCreate['readMask'] = implode(',', self::PersonFields);
+
+        // return response
+        return $this->client->request(
+            'POST',
+            'people:batchCreateContacts',
+            json_encode($custom ? $custom : $dataCreate)
+        );
+    }
+
+    /**
+     * Build Contact Update in Array Batch
+     *
+     * @param string $peopleID
+     * @param string $etag
+     * @param string $phone
+     * @param string $firstName
+     * @param string $lastName
+     * @return void
+     */
+    public function batchBuildUpdateContact($peopleID, $etag, $phone, $firstName, $lastName)
+    {
+        // create contact array
+        $contact = self::buildContact($phone, $firstName, $lastName);
+        $updateContact = array_merge(['resourceName' => $peopleID, 'etag' => $etag], $contact);
+        $this->batch[] = $updateContact;
     }
 
     /**
@@ -157,16 +216,34 @@ class People
      * 
      * @see https://developers.google.com/people/api/rest/v1/people/batchUpdateContacts
      * 
-     * @param array $lists
+     * @param array $custom
      */
-    public function batchUpdateContact($lists)
+    public function batchUpdateContact($custom = null)
     {
         // count array
-        if (count($lists) > 200) {
+        if (count($this->batch) > 200) {
             throw new Exception("Maximum 200 Contact.!");
         }
 
-        //
+        // build data for bulk
+        $dataCreate = [];
+
+        // generate contact
+        $dataCreate['contacts'] = [];
+        foreach($this->batch as $list) {
+            $dataCreate['contacts'][$list['resourceName']] = $list;
+        }
+
+        // other data
+        $dataCreate['updateMask'] = 'names,phoneNumbers';
+        $dataCreate['readMask'] = implode(',', self::PersonFields);
+
+        // return response
+        return $this->client->request(
+            'POST',
+            'people:batchUpdateContacts',
+            json_encode($custom ? $custom : $dataCreate)
+        );
     }
 
     /**
