@@ -248,7 +248,7 @@ class People
 
     /**
      * Bulk Delete Contact
-     * Max: 200 Contact/Request
+     * Max: 500 Contact/Request
      * Limited to 10 parallel requests per user
      * 
      * @see https://developers.google.com/people/api/rest/v1/people/batchDeleteContacts
@@ -258,8 +258,8 @@ class People
     public function batchDeleteContact($lists)
     {
         // count array
-        if (count($lists) > 200) {
-            throw new Exception("Maximum 200 Contact.!");
+        if (count($lists) > 500) {
+            throw new Exception("Maximum 500 Contact.!");
         }
         
         // array data
